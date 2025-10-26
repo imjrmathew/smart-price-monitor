@@ -19,6 +19,15 @@ import {
   listenToMessages,
 } from "./@commands/commands.js";
 import { schedulePriceChecks } from "./@cron/schedule.js";
+import express from "express";
+
+// Express app setup (optional, for health checks or webhooks)
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.get("/", (req, res) => {
+  res.send("Telegram Price Tracker Bot is running!");
+});
 
 // Initialize bot and database
 const bot = createBot();
@@ -95,3 +104,7 @@ bot.onText(/\/remove (.+)/, async (msg, match) => {
 bot.onText(/\/clear/, async (msg) => await clearCommand(msg.chat.id));
 
 bot.onText(/\/help/, async (msg) => await helpCommand(msg.chat.id));
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
